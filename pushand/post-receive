@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Checkout the real 'master' so we can view the repo files
+here=`pwd`
+working_dir=`echo "$here" | sed 's/\/.git$//g'`
+repo_script="$working_dir/.pushand"
+output=`git --work-tree=$working_dir checkout master 2>&1`
+
+cd ..
+env -i git reset --hard
+
+# If the repository has a file called '.pushand' then run it
+if [ -f "$repo_script" ]; then
+  chmod +x $repo_script
+  exec "$repo_script"
+fi
